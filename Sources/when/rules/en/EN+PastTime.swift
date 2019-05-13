@@ -1,0 +1,97 @@
+/*
+ Original work Copyright 2016 Oleg Lebedev <ole6edev@gmail.com>
+ Swift port Copyright 2019, Hèctor Marquès Ranea
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+import Foundation
+
+extension EN {
+    public static func buildPastTime(strategy: Strategy = .override) -> Rule {
+        return RegexRule(
+            calendar: calendar,
+            regex: regex,
+            applier: { match, context, _, reference in
+                // 0. parse captures
+                let numStr = match.captures[0].trimmingCharacters(in: .whitespaces)
+                let num: Int? = try {
+                    if let num = integerWords[numStr] {
+                        return num
+                    } else if numStr == "a" || numStr == "an" {
+                        return 1
+                    } else if numStr.contains("few") {
+                        return 3
+                    } else if numStr.contains("half") {
+                        return nil // pass
+                    } else {
+                        guard let num = Int(numStr) else { throw Error.cannotParseInt(string: numStr) }
+                        return num
+                    }
+                    }()
+                let exponent = match.captures[1].trimmingCharacters(in: .whitespaces)
+                let components = calendar.dateComponents([.month, .year], from: reference)
+
+                // 1. update context
+                var updated = context
+                if let num = num {
+                    switch exponent {
+                    case let string where string.contains("second"):
+                        updated.duration = TimeInterval(-num)
+                    case let string where string.contains("min"):
+                        updated.duration = TimeInterval(-num) * 60
+                    case let string where string.contains("hour"):
+                        updated.duration = TimeInterval(-num) * 3600
+                    case let string where string.contains("day"):
+                        updated.duration = TimeInterval(-num) * 24 * 3600
+                    case let string where string.contains("week"):
+                        updated.duration = TimeInterval(-num) * 7 * 24 * 3600
+                    case let string where string.contains("month"):
+                        guard let monthComponent = components.month else { throw Error.missingComponent(.month, in: components) }
+                        updated.month = monthComponent - num
+                    case let string where string.contains("year"):
+                        guard let yearComponent = components.year else { throw Error.missingComponent(.month, in: components) }
+                        updated.year = yearComponent - num
+                    default:
+                        return false
+                    }
+                } else {
+                    switch exponent {
+                    case let string where string.contains("hour"):
+                        updated.duration = -30 * 60
+                    case let string where string.contains("day"):
+                        updated.duration = -12 * 3600
+                    case let string where string.contains("week"):
+                        updated.duration = -7 * 12 * 3600
+                    case let string where string.contains("month"):
+                        // 2 weeks
+                        updated.duration = -14 * 24 * 3600
+                    case let string where string.contains("year"):
+                        guard let monthComponent = components.month else { throw Error.missingComponent(.month, in: components) }
+                        updated.month = monthComponent - 6
+                    default:
+                        return false
+                    }
+                }
+
+                // 2. merge result
+                _ = strategy.mergeContexts(theirs: &context, mine: updated)
+                return true
+        })
+    }
+
+    private static let regex = try! NSRegularExpression(pattern: "(?i)(?:\\W|^)\\s*" +
+        "(" + integerWordsPattern + "|[0-9]+|an?(?:\\s*few)?|half(?:\\s*an?)?)\\s*" +
+        "(seconds?|min(?:ute)?s?|hours?|days?|weeks?|months?|years?) (ago)\\s*" +
+        "(?:\\W|$)")
+}
