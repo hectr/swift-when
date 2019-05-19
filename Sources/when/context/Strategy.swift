@@ -38,12 +38,12 @@ public enum Strategy: Equatable, CaseIterable {
     private static func doSkip(theirs: inout Context, mine: Context) -> Bool {
         guard theirs.year == mine.year       || theirs.year == nil     || mine.year == nil,
             theirs.month == mine.month       || theirs.month == nil    || mine.month == nil,
-            theirs.weekday == mine.weekday   || theirs.weekday == nil  || mine.weekday == nil,
             theirs.day == mine.day           || theirs.day == nil      || mine.day == nil,
             theirs.hour == mine.hour         || theirs.hour == nil     || mine.hour == nil,
             theirs.minute == mine.minute     || theirs.minute == nil   || mine.minute == nil,
             theirs.second == mine.second     || theirs.second == nil   || mine.second == nil,
-            theirs.duration == mine.duration || theirs.duration == nil || mine.duration == nil else { return false }
+            theirs.dateOffset == mine.dateOffset || theirs.dateOffset == nil || mine.dateOffset == nil,
+            theirs.timeOffset == mine.timeOffset || theirs.timeOffset == nil || mine.timeOffset == nil else { return false }
         guard theirs != mine else { return false }
         theirs = mine
         return true
@@ -58,10 +58,6 @@ public enum Strategy: Equatable, CaseIterable {
         if theirs.month == nil {
             updated = true
             theirs.month = mine.month
-        }
-        if theirs.weekday == nil {
-            updated = true
-            theirs.weekday = mine.weekday
         }
         if theirs.day == nil {
             updated = true
@@ -79,9 +75,13 @@ public enum Strategy: Equatable, CaseIterable {
             updated = true
             theirs.second = mine.second
         }
-        if theirs.duration == nil {
+        if theirs.dateOffset == nil {
             updated = true
-            theirs.duration = mine.duration
+            theirs.dateOffset = mine.dateOffset
+        }
+        if theirs.timeOffset == nil {
+            updated = true
+            theirs.timeOffset = mine.timeOffset
         }
         return updated
     }

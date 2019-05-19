@@ -16,9 +16,20 @@
 
 import Foundation
 
-extension TimeInterval {
-    init(days: Int) {
-        let oneDay = 24 * 3600
-        self = TimeInterval(days * oneDay)
+public struct TimeComponentsOffset: Equatable {
+    let seconds: Int
+    let minutes: Int
+    let hours: Int
+
+    init(hours: Int = 0, minutes: Int = 0, seconds: Int = 0) {
+        self.hours = hours
+        self.minutes = minutes
+        self.seconds = seconds
+    }
+
+    func adding(hours: Int = 0, minutes: Int = 0, seconds: Int = 0) -> TimeComponentsOffset {
+        return TimeComponentsOffset(hours: self.hours + hours,
+                                    minutes: self.minutes + minutes,
+                                    seconds: self.seconds + seconds)
     }
 }

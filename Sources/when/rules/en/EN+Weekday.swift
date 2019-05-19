@@ -36,7 +36,6 @@ extension EN {
                     norm = "next"
                 }
                 guard let dayInt = weekdayOffset[day] else { return false }
-                let duration = context.duration ?? 0.0
                 let components = calendar.dateComponents([.weekday], from: reference)
                 guard let weekdayComponent = components.weekday else { throw Error.missingComponent(.weekday, in: components) }
 
@@ -46,39 +45,39 @@ extension EN {
                 case let string where string.contains("past") || string.contains("last"):
                     let diff = weekdayComponent - dayInt
                     if diff > 0 {
-                        updated.duration = duration - TimeInterval(days: diff)
+                        updated.dateOffset = DateComponentsOffset(days: -diff)
                     } else if diff < 0 {
-                        updated.duration = duration - TimeInterval(days: 7 + diff)
+                        updated.dateOffset = DateComponentsOffset(days: -diff).adding(days: -7)
                     } else {
-                        updated.duration = duration - TimeInterval(days: 7)
+                        updated.dateOffset = DateComponentsOffset(days: -7)
                     }
                 case let string where string.contains("next"):
                     let diff = dayInt - weekdayComponent
                     if diff > 0 {
-                        updated.duration = duration + TimeInterval(days: diff)
+                        updated.dateOffset = DateComponentsOffset(days: diff)
                     } else if diff < 0 {
-                        updated.duration = duration + TimeInterval(days: 7 + diff)
+                        updated.dateOffset = DateComponentsOffset(days: diff).adding(days: 7)
                     } else {
-                        updated.duration = duration + TimeInterval(days: 7)
+                        updated.dateOffset = DateComponentsOffset(days: 7)
                     }
                 case let string where string.contains("this"):
                     if weekdayComponent < dayInt {
                         let diff = dayInt - weekdayComponent
                         if diff > 0 {
-                            updated.duration = duration + TimeInterval(days: diff)
+                            updated.dateOffset = DateComponentsOffset(days: diff)
                         } else if diff < 0 {
-                            updated.duration = duration + TimeInterval(days: 7 + diff)
+                            updated.dateOffset = DateComponentsOffset(days: diff).adding(days: 7)
                         } else {
-                            updated.duration = duration + TimeInterval(days: 7)
+                            updated.dateOffset = DateComponentsOffset(days: 7)
                         }
                     } else if weekdayComponent > dayInt {
                         let diff = weekdayComponent - dayInt
                         if diff > 0 {
-                            updated.duration = duration - TimeInterval(days: diff)
+                            updated.dateOffset = DateComponentsOffset(days: -diff)
                         } else if diff < 0 {
-                            updated.duration = duration - TimeInterval(days: 7 + diff)
+                            updated.dateOffset = DateComponentsOffset(days: -diff).adding(days: -7)
                         } else {
-                            updated.duration = duration - TimeInterval(days:7)
+                            updated.dateOffset = DateComponentsOffset(days: -7)
                         }
                     }
                 default:

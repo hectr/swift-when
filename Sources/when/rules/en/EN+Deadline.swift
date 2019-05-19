@@ -40,45 +40,40 @@ extension EN {
                     }
                     }()
                 let exponent = match.captures[2].trimmingCharacters(in: .whitespaces)
-                let components = calendar.dateComponents([.month, .year], from: reference)
 
                 // 1. update context
                 var updated = context
                 if let num = num {
                     switch exponent {
                     case let string where string.contains("second"):
-                        updated.duration = TimeInterval(num)
+                        updated.timeOffset = TimeComponentsOffset(seconds: num)
                     case let string where string.contains("min"):
-                        updated.duration = TimeInterval(num) * 60
+                        updated.timeOffset = TimeComponentsOffset(minutes: num)
                     case let string where string.contains("hour"):
-                        updated.duration = TimeInterval(num) * 3600
+                        updated.timeOffset = TimeComponentsOffset(hours: num)
                     case let string where string.contains("day"):
-                        updated.duration = TimeInterval(num) * 24 * 3600
+                        updated.dateOffset = DateComponentsOffset(days: num)
                     case let string where string.contains("week"):
-                        updated.duration = TimeInterval(num) * 7 * 24 * 3600
+                        updated.dateOffset = DateComponentsOffset(days: num * 7)
                     case let string where string.contains("month"):
-                        guard let monthComponent = components.month else { throw Error.missingComponent(.month, in: components) }
-                        updated.month = monthComponent + num
+                        updated.dateOffset = DateComponentsOffset(months: num)
                     case let string where string.contains("year"):
-                        guard let yearComponent = components.year else { throw Error.missingComponent(.month, in: components) }
-                        updated.year = yearComponent + num
+                        updated.dateOffset = DateComponentsOffset(years: num)
                     default:
                         return false
                     }
                 } else {
                     switch exponent {
                     case let string where string.contains("hour"):
-                        updated.duration = 30 * 60
+                        updated.timeOffset = TimeComponentsOffset(minutes: 30)
                     case let string where string.contains("day"):
-                        updated.duration = 12 * 3600
+                        updated.timeOffset = TimeComponentsOffset(hours: 12)
                     case let string where string.contains("week"):
-                        updated.duration = 7 * 12 * 3600
+                        updated.timeOffset = TimeComponentsOffset(hours: 7 * 12)
                     case let string where string.contains("month"):
-                        // 2 weeks
-                        updated.duration = 14 * 24 * 3600
+                        updated.dateOffset = DateComponentsOffset(days: 7 * 2)
                     case let string where string.contains("year"):
-                        guard let monthComponent = components.month else { throw Error.missingComponent(.month, in: components) }
-                        updated.month = monthComponent + 6
+                        updated.dateOffset = DateComponentsOffset(months: 6)
                     default:
                         return false
                     }

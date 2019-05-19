@@ -21,17 +21,18 @@ public struct Context: Equatable {
     public let text: String
     
     /// Accumulator of relative values.
-    public var duration: TimeInterval?
-    
-    /// Aboslute values.
-    public var year, month, weekday, day, hour, minute, second: Int?
+    public var dateOffset: DateComponentsOffset?
+    public var timeOffset: TimeComponentsOffset?
 
-    init(text: String, duration: TimeInterval? = nil, year: Int? = nil, month: Int? = nil, weekday: Int? = nil, day: Int? = nil, hour: Int? = nil, minute: Int? = nil, second: Int? = nil) {
+    /// Aboslute values.
+    public var year, month, day, hour, minute, second: Int?
+
+    init(text: String, dateOffset: DateComponentsOffset? = nil, timeOffset: TimeComponentsOffset? = nil, year: Int? = nil, month: Int? = nil, day: Int? = nil, hour: Int? = nil, minute: Int? = nil, second: Int? = nil) {
         self.text = text
-        self.duration = duration
+        self.dateOffset = dateOffset
+        self.timeOffset = timeOffset
         self.year = year
         self.month = month
-        self.weekday = weekday
         self.day = day
         self.hour = hour
         self.minute = minute
@@ -39,20 +40,13 @@ public struct Context: Equatable {
     }
 
     public func time(date: Date, calendar: Calendar) throws -> Date {
-        var t = date
-        if let duration = duration, duration != 0 {
-            t = t.addingTimeInterval(duration)
-        }
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         
-        var components = calendar.dateComponents([.year, .month, .weekday, .day, .hour, .minute, .second], from: t)
         if let year = year {
             components.year = year
         }
         if let month = month {
             components.month = month
-        }
-        if let weekday = weekday {
-            components.weekday = weekday
         }
         if let day = day {
             components.day = day
@@ -65,6 +59,31 @@ public struct Context: Equatable {
         }
         if let second = second {
             components.second = second
+        }
+
+        if let years = dateOffset?.years {
+            guard let year = components.year else { throw Error.missingComponent(.year, in: components) }
+            components.year = year + years
+        }
+        if let months = dateOffset?.months {
+            guard let month = components.month else { throw Error.missingComponent(.month, in: components) }
+            components.month = month + months
+        }
+        if let days = dateOffset?.days {
+            guard let day = components.day else { throw Error.missingComponent(.day, in: components) }
+            components.day = day + days
+        }
+        if let hours = timeOffset?.hours {
+            guard let hour = components.hour else { throw Error.missingComponent(.hour, in: components) }
+            components.hour = hour + hours
+        }
+        if let minutes = timeOffset?.minutes {
+            guard let minute = components.minute else { throw Error.missingComponent(.minute, in: components) }
+            components.minute = minute + minutes
+        }
+        if let seconds = timeOffset?.seconds {
+            guard let second = components.second else { throw Error.missingComponent(.second, in: components) }
+            components.second = second + seconds
         }
 
         components.calendar = calendar

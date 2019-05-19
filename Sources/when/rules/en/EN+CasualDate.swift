@@ -28,8 +28,7 @@ extension EN {
                     .text
                     .trimmingCharacters(in: .whitespacesAndNewlines)
                     .lowercased()
-                let duration = context.duration ?? 0.0
-                let oneDay: TimeInterval = 24 * 3600
+                let dateOffset = context.dateOffset ?? DateComponentsOffset()
 
                 // 1. update context
                 var updated = context
@@ -44,13 +43,12 @@ extension EN {
                     // updated.hour = 18
                     break
                 case let string where string.contains("tomorrow") || string.contains("tmr"):
-                    updated.duration = duration + oneDay
+                    updated.dateOffset = dateOffset.adding(days: 1)
                 case let string where string.contains("yesterday"):
-                    let duration = updated.duration ?? 0.0
-                    updated.duration = duration - oneDay
+                    updated.dateOffset = dateOffset.adding(days: -1)
                 case let string where string.contains("last night"):
                     updated.hour = 23
-                    updated.duration = duration - oneDay
+                    updated.dateOffset = dateOffset.adding(days: -1)
                 default:
                     return false
                 }
