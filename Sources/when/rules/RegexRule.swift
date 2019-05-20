@@ -25,9 +25,9 @@ public struct RegexRule: Rule {
     private let applier: Match.Applier
 
     public init(calendar: Calendar, regex: NSRegularExpression, applier: @escaping Match.Applier) {
+        self.calendar = calendar
         self.regex = regex
         self.applier = applier
-        self.calendar = calendar
     }
 
     public func find(_ text: String) -> Match? {

@@ -1,5 +1,4 @@
 /*
- Original work Copyright 2016 Oleg Lebedev <ole6edev@gmail.com>
  Swift port Copyright 2019, Hèctor Marquès Ranea
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +17,48 @@
 import Foundation
 
 public struct Options: Equatable {
-    public let afternoon, evening, morning, noon: Int
+    public let earlyMorning: Int
+    public let morning: Int
+    public let lateMorning: Int
+    public let noon: Int
+    public let earlyAfternoon: Int
+    public let afternoon: Int
+    public let lateAfternoon: Int
+    public let earlyEvening: Int
+    public let evening: Int
+    public let lateEvening: Int
+    public let night: Int
+    public let midnight: Int
+
     public let maxDistance: Int // maximum clustering distance for matches within the same result
     public let matchByOrder: Bool
 
-    public init(afternoon: Int = 15, evening: Int = 18, morning: Int = 8, noon: Int = 12, maxDistance: Int = 5, matchByOrder: Bool = true) {
-        self.afternoon = afternoon
-        self.evening = evening
+    public init(earlyMorning: Int = 7,
+                morning: Int = 8,
+                lateMorning: Int = 10,
+                noon: Int = 12,
+                earlyAfternoon: Int = 13,
+                afternoon: Int = 15,
+                lateAfternoon: Int = 16,
+                earlyEvening: Int = 17,
+                evening: Int = 18,
+                lateEvening: Int = 21,
+                night: Int = 23,
+                midnight: Int = 24,
+                maxDistance: Int = 5,
+                matchByOrder: Bool = true) {
+        self.earlyMorning = earlyMorning
         self.morning = morning
+        self.lateMorning = lateMorning
         self.noon = noon
+        self.earlyAfternoon = earlyAfternoon
+        self.afternoon = afternoon
+        self.lateAfternoon = lateAfternoon
+        self.earlyEvening = earlyEvening
+        self.evening = evening
+        self.lateEvening = lateEvening
+        self.night = night
+        self.midnight = midnight
         self.maxDistance = maxDistance
         self.matchByOrder = matchByOrder
     }
