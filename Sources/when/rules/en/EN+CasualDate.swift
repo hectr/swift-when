@@ -22,43 +22,33 @@ extension EN {
         return RegexRule(
             calendar: calendar,
             regex: regex,
-            applier: { match, context, _, _ in
+            strategy: strategy,
+            tagger: { match in
                 // 0. parse captures
                 let lower = match
                     .text
                     .trimmingCharacters(in: .whitespacesAndNewlines)
                     .lowercased()
-                let dateOffset = context.dateOffset ?? DateComponentsOffset()
 
-                // 1. update context
-                var updated = context
+                // 1. extract tags
                 switch lower {
                 case let string where string.contains("now"):
-                    // updated.duration = 0
-                    break
+                    return [.now, .today]
                 case let string where string.contains("tonight"):
-                    updated.hour = 23
-                    updated.minute = 0
+                    return [.night, .today]
                 case let string where string.contains("today"):
-                    // updated.hour = 18
-                    break
+                    return [.today]
                 case let string where string.contains("tomorrow") || string.contains("tmr"):
-                    updated.dateOffset = dateOffset.adding(days: 1)
+                    return [.tomorrow]
                 case let string where string.contains("yesterday"):
-                    updated.dateOffset = dateOffset.adding(days: -1)
+                    return [.yesterday]
                 case let string where string.contains("last night"):
-                    updated.hour = 23
-                    updated.dateOffset = dateOffset.adding(days: -1)
+                    return [.night, .yesterday]
                 default:
-                    return false
+                    return []
                 }
-
-                // 2. merge result
-                _ = strategy.mergeContexts(theirs: &context, mine: updated)
-                return true
         })
-
     }
 
-    private static let regex = try! NSRegularExpression(pattern: "(?i)(?:\\W|^)(now|today|tonight|last\\s*night|(?:tomorrow|tmr|yesterday)\\s*|tomorrow|tmr|yesterday)(?:\\W|$)")
+    private static let regex = try! NSRegularExpression(pattern: "(?i)(?:\\W|^)(now|today|tonight|last\\s*night|tomorrow|tmr|yesterday)(?:\\W|$)")
 }
