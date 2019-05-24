@@ -68,6 +68,17 @@ extension RuleFactory {
         return buildPattern(for: ordinalWords)
     }
 
+    public static var relativeDateWords: [String: DateTimeTag] {
+        let absoluteFormatter = buildDateFormatter(isRelative: false)
+        let relativeFormatter = buildDateFormatter(isRelative: true)
+        return buildWordsForRelativeTags(absoluteFormatter: absoluteFormatter,
+                                         relativeFormatter: relativeFormatter)
+    }
+
+    public static var relativeDateWordsPattern: String {
+        return buildPattern(for: relativeDateWords)
+    }
+
     public static func getMonthDays(month: Int, year: Int) throws -> Int {
         let components = DateComponents(calendar: calendar,
                                         timeZone: calendar.timeZone,
@@ -118,5 +129,38 @@ extension RuleFactory {
         }
         return numbers
     }
-}
 
+    private static func buildDateFormatter(isRelative: Bool) -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.locale = calendar.locale
+        formatter.timeStyle = .none
+        formatter.dateStyle = .short
+        formatter.doesRelativeDateFormatting = isRelative
+        return formatter
+    }
+
+    private static func buildWordsForRelativeTags(absoluteFormatter: DateFormatter, relativeFormatter: DateFormatter) -> [String: DateTimeTag] {
+        let relativeTags: [DateTimeTag] = [.dayBeforeYesterday, .yesterday, .today, .tomorrow, .dayAfterTomorrow]
+        var tags = [String: DateTimeTag]()
+        for tag in relativeTags {
+            var components = calendar.dateComponents([.year, .month, .day], from: Date())
+            if let dateOffset = tag.dateOffset {
+                do {
+                    try dateOffset.apply(to: &components)
+                } catch { continue }
+            }
+            if let timeOffset = tag.timeOffset {
+                do {
+                    try timeOffset.apply(to: &components)
+                } catch { continue }
+            }
+            guard let date = calendar.date(from: components) else { continue }
+            let absolute = absoluteFormatter.string(from: date)
+            let relative = relativeFormatter.string(from: date)
+            guard absolute != relative else { continue }
+            let word = relative.lowercased()
+            tags[word] = tag
+        }
+        return tags
+    }
+}

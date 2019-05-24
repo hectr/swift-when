@@ -33,5 +33,8 @@ public protocol RuleFactory {
 
     static var all: [Rule] { get }
 
+    static var relativeDateWords: [String: DateTimeTag] { get }
+    static var relativeDateWordsPattern: String { get }
+
     static func getMonthDays(month: Int, year: Int) throws -> Int
 }
