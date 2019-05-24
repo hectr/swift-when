@@ -91,6 +91,7 @@ The library is still in development. You can expect some API changes in future u
 
 - [SwiftyChrono](https://github.com/quire-io/SwiftyChrono)
 - [MKDataDetector](https://github.com/mayankk2308/mkdatadetector)
+- [NSDataDetector](https://developer.apple.com/documentation/foundation/nsdatadetector)
 
 ### LICENSE
 
