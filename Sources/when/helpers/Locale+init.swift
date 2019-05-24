@@ -17,7 +17,7 @@
 import Foundation
 
 extension Locale {
-    public init(languageCode: String?, regionCode: String?, scriptCode: String?, variantCode: String?) {
+    public init(languageCode: String? = nil, regionCode: String? = nil, scriptCode: String? = nil, variantCode: String? = nil) {
         let localeIdentifier: String = {
             var identifier = ""
             if let languageCode = languageCode {
