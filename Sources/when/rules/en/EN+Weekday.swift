@@ -30,8 +30,8 @@ extension EN {
                     .lowercased()
                 var norm = match
                     .captures[0] + match.captures[2]
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                    .lowercased()
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .lowercased()
                 if norm.isEmpty {
                     norm = "next"
                 }
@@ -45,39 +45,39 @@ extension EN {
                 case let string where string.contains("past") || string.contains("last"):
                     let diff = weekdayComponent - dayInt
                     if diff > 0 {
-                        updated.dateOffset = DateComponentsOffset(days: -diff)
+                        updated.dateOffset = DateOffset(days: -diff)
                     } else if diff < 0 {
-                        updated.dateOffset = DateComponentsOffset(days: -diff).adding(days: -7)
+                        updated.dateOffset = DateOffset(days: -diff).adding(days: -7)
                     } else {
-                        updated.dateOffset = DateComponentsOffset(days: -7)
+                        updated.dateOffset = DateOffset(days: -7)
                     }
                 case let string where string.contains("next"):
                     let diff = dayInt - weekdayComponent
                     if diff > 0 {
-                        updated.dateOffset = DateComponentsOffset(days: diff)
+                        updated.dateOffset = DateOffset(days: diff)
                     } else if diff < 0 {
-                        updated.dateOffset = DateComponentsOffset(days: diff).adding(days: 7)
+                        updated.dateOffset = DateOffset(days: diff).adding(days: 7)
                     } else {
-                        updated.dateOffset = DateComponentsOffset(days: 7)
+                        updated.dateOffset = DateOffset(days: 7)
                     }
                 case let string where string.contains("this"):
                     if weekdayComponent < dayInt {
                         let diff = dayInt - weekdayComponent
                         if diff > 0 {
-                            updated.dateOffset = DateComponentsOffset(days: diff)
+                            updated.dateOffset = DateOffset(days: diff)
                         } else if diff < 0 {
-                            updated.dateOffset = DateComponentsOffset(days: diff).adding(days: 7)
+                            updated.dateOffset = DateOffset(days: diff).adding(days: 7)
                         } else {
-                            updated.dateOffset = DateComponentsOffset(days: 7)
+                            updated.dateOffset = DateOffset(days: 7)
                         }
                     } else if weekdayComponent > dayInt {
                         let diff = weekdayComponent - dayInt
                         if diff > 0 {
-                            updated.dateOffset = DateComponentsOffset(days: -diff)
+                            updated.dateOffset = DateOffset(days: -diff)
                         } else if diff < 0 {
-                            updated.dateOffset = DateComponentsOffset(days: -diff).adding(days: -7)
+                            updated.dateOffset = DateOffset(days: -diff).adding(days: -7)
                         } else {
-                            updated.dateOffset = DateComponentsOffset(days: -7)
+                            updated.dateOffset = DateOffset(days: -7)
                         }
                     }
                 default:

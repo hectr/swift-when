@@ -71,36 +71,36 @@ public enum DateTimeTag {
             return nil
         }
     }
-
-    var dateOffset: DateComponentsOffset? {
+    
+    var dateOffset: DateOffset? {
         switch self {
         case .earlyMorning, .morning, .lateMorning, .noon, .earlyAfternoon,
              .afternoon, .lateAfternoon, .earlyEvening, .evening,  .lateEvening,
              .night, .midnight:
             return nil
         case .now:
-            return DateComponentsOffset()
+            return DateOffset()
         case .dayBeforeYesterday:
-            return DateComponentsOffset(days: -2)
+            return DateOffset(days: -2)
         case .yesterday:
-            return DateComponentsOffset(days: -1)
+            return DateOffset(days: -1)
         case .today:
-            return DateComponentsOffset(days: 0)
+            return DateOffset(days: 0)
         case .tomorrow:
-            return DateComponentsOffset(days: 1)
+            return DateOffset(days: 1)
         case .dayAfterTomorrow:
-            return DateComponentsOffset(days: 2)
+            return DateOffset(days: 2)
         }
     }
-
-    var timeOffset: TimeComponentsOffset? {
+    
+    var timeOffset: TimeOffset? {
         switch self {
         case .earlyMorning, .morning, .lateMorning, .noon, .earlyAfternoon,
              .afternoon, .lateAfternoon, .earlyEvening, .evening,  .lateEvening,
              .night, .midnight:
             return nil
         case .now:
-            return TimeComponentsOffset()
+            return TimeOffset()
         case .dayBeforeYesterday, .yesterday, .today, .tomorrow,
              .dayAfterTomorrow:
             return nil

@@ -19,36 +19,15 @@ import Foundation
 
 extension EN {
     public static func buildCasualDate(strategy: Strategy = .override) -> Rule {
-        return RegexRule(
-            calendar: calendar,
-            regex: regex,
-            strategy: strategy,
-            tagger: { match in
-                // 0. parse captures
-                let lower = match
-                    .text
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                    .lowercased()
-
-                // 1. extract tags
-                switch lower {
-                case let string where string.contains("now"):
-                    return [.now, .today]
-                case let string where string.contains("tonight"):
-                    return [.night, .today]
-                case let string where string.contains("today"):
-                    return [.today]
-                case let string where string.contains("tomorrow") || string.contains("tmr"):
-                    return [.tomorrow]
-                case let string where string.contains("yesterday"):
-                    return [.yesterday]
-                case let string where string.contains("last night"):
-                    return [.night, .yesterday]
-                default:
-                    return []
-                }
-        })
+        return buildTaggerRule(taggedWords: ["now": [.now],
+                                             "today": [.today],
+                                             "tonight": [.night, .today],
+                                             "tomorrow": [.tomorrow],
+                                             "tmr": [.tomorrow],
+                                             "yesterday": [.yesterday],
+                                             "last night": [.night, .yesterday]],
+                               regex: regex)
     }
-
+    
     private static let regex = try! NSRegularExpression(pattern: "(?i)(?:\\W|^)(now|today|tonight|last\\s*night|tomorrow|tmr|yesterday)(?:\\W|$)")
 }

@@ -1,6 +1,5 @@
 /*
- Original work Copyright 2016 Oleg Lebedev <ole6edev@gmail.com>
- Swift port Copyright 2019, Hèctor Marquès Ranea
+ Copyright 2019, Hèctor Marquès Ranea
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,13 +20,13 @@ public struct Context: Equatable {
     public let text: String
     
     /// Accumulator of relative values.
-    public var dateOffset: DateComponentsOffset?
-    public var timeOffset: TimeComponentsOffset?
-
+    public var dateOffset: DateOffset?
+    public var timeOffset: TimeOffset?
+    
     /// Aboslute values.
     public var year, month, day, hour, minute, second: Int?
-
-    init(text: String, dateOffset: DateComponentsOffset? = nil, timeOffset: TimeComponentsOffset? = nil, year: Int? = nil, month: Int? = nil, day: Int? = nil, hour: Int? = nil, minute: Int? = nil, second: Int? = nil) {
+    
+    init(text: String, dateOffset: DateOffset? = nil, timeOffset: TimeOffset? = nil, year: Int? = nil, month: Int? = nil, day: Int? = nil, hour: Int? = nil, minute: Int? = nil, second: Int? = nil) {
         self.text = text
         self.dateOffset = dateOffset
         self.timeOffset = timeOffset
@@ -38,7 +37,7 @@ public struct Context: Equatable {
         self.minute = minute
         self.second = second
     }
-
+    
     public func time(date: Date, calendar: Calendar) throws -> Date {
         var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         
@@ -60,34 +59,12 @@ public struct Context: Equatable {
         if let second = second {
             components.second = second
         }
-
-        if let years = dateOffset?.years {
-            guard let year = components.year else { throw Error.missingComponent(.year, in: components) }
-            components.year = year + years
-        }
-        if let months = dateOffset?.months {
-            guard let month = components.month else { throw Error.missingComponent(.month, in: components) }
-            components.month = month + months
-        }
-        if let days = dateOffset?.days {
-            guard let day = components.day else { throw Error.missingComponent(.day, in: components) }
-            components.day = day + days
-        }
-        if let hours = timeOffset?.hours {
-            guard let hour = components.hour else { throw Error.missingComponent(.hour, in: components) }
-            components.hour = hour + hours
-        }
-        if let minutes = timeOffset?.minutes {
-            guard let minute = components.minute else { throw Error.missingComponent(.minute, in: components) }
-            components.minute = minute + minutes
-        }
-        if let seconds = timeOffset?.seconds {
-            guard let second = components.second else { throw Error.missingComponent(.second, in: components) }
-            components.second = second + seconds
-        }
-
+        
+        try dateOffset?.apply(to: &components)
+        try timeOffset?.apply(to: &components)
+        
         components.calendar = calendar
-
+        
         guard let result = components.date else { throw Error.cannotCalculateDate(context: self, input: date, calendar: calendar, components: components) }
         return result
     }

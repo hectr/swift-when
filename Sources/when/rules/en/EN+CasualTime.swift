@@ -19,31 +19,11 @@ import Foundation
 
 extension EN {
     public static func buildCasualTime(strategy: Strategy = .override) -> Rule {
-        return RegexRule(
-            calendar: calendar,
-            regex: regex,
-            strategy: strategy,
-            tagger: { match in
-                // 0. parse captures
-                let lower = match
-                    .text
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                    .lowercased()
-                
-                // 1. extract tag
-                switch lower {
-                case let string where string.contains("afternoon"):
-                    return [.afternoon]
-                case let string where string.contains("evening"):
-                    return [.evening]
-                case let string where string.contains("morning"):
-                    return [.morning]
-                case let string where string.contains("noon"):
-                    return [.noon]
-                default:
-                    return []
-                }
-        })
+        return buildTaggerRule(taggedWords: ["morning": [.morning],
+                                             "afternoon": [.afternoon],
+                                             "evening": [.evening],
+                                             "noon": [.noon]],
+                               regex: regex)
     }
     
     private static let regex = try! NSRegularExpression(pattern: "(?i)(?:\\W|^)((this)?\\s*(morning|afternoon|evening|noon))")

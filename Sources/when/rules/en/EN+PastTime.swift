@@ -46,34 +46,34 @@ extension EN {
                 if let num = num {
                     switch exponent {
                     case let string where string.contains("second"):
-                        updated.timeOffset = TimeComponentsOffset(seconds: -num)
+                        updated.timeOffset = TimeOffset(seconds: -num)
                     case let string where string.contains("min"):
-                        updated.timeOffset = TimeComponentsOffset(minutes: -num)
+                        updated.timeOffset = TimeOffset(minutes: -num)
                     case let string where string.contains("hour"):
-                        updated.timeOffset = TimeComponentsOffset(hours: -num)
+                        updated.timeOffset = TimeOffset(hours: -num)
                     case let string where string.contains("day"):
-                        updated.dateOffset = DateComponentsOffset(days: -num)
+                        updated.dateOffset = DateOffset(days: -num)
                     case let string where string.contains("week"):
-                        updated.dateOffset = DateComponentsOffset(days: -num * 7)
+                        updated.dateOffset = DateOffset(days: -num * 7)
                     case let string where string.contains("month"):
-                        updated.dateOffset = DateComponentsOffset(months: -num)
+                        updated.dateOffset = DateOffset(months: -num)
                     case let string where string.contains("year"):
-                        updated.dateOffset = DateComponentsOffset(years: -num)
+                        updated.dateOffset = DateOffset(years: -num)
                     default:
                         return false
                     }
                 } else {
                     switch exponent {
                     case let string where string.contains("hour"):
-                        updated.timeOffset = TimeComponentsOffset(minutes: -30)
+                        updated.timeOffset = TimeOffset(minutes: -30)
                     case let string where string.contains("day"):
-                        updated.timeOffset = TimeComponentsOffset(hours: -12)
+                        updated.timeOffset = TimeOffset(hours: -12)
                     case let string where string.contains("week"):
-                        updated.timeOffset = TimeComponentsOffset(hours: -7 * 12)
+                        updated.timeOffset = TimeOffset(hours: -7 * 12)
                     case let string where string.contains("month"):
-                        updated.dateOffset = DateComponentsOffset(days: -14)
+                        updated.dateOffset = DateOffset(days: -14)
                     case let string where string.contains("year"):
-                        updated.dateOffset = DateComponentsOffset(months: -6)
+                        updated.dateOffset = DateOffset(months: -6)
                     default:
                         return false
                     }
