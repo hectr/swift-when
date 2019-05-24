@@ -88,7 +88,7 @@ public struct Parser {
         var context = Context(text: resultText)
         var applied = false
         for match in cluster {
-            applied = try match.applier(match, &context, options, &resultDate) || applied
+            applied = try match.applier(match, &context, options, resultDate) || applied
         }
         guard applied else { throw Error.notApplied(matches: cluster, context: context, options: options, date: resultDate) }
 

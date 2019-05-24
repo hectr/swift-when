@@ -18,7 +18,7 @@
 import Foundation
 
 public struct Match {
-    public typealias Applier = (Match, inout Context, Options, inout Date) throws -> Bool
+    public typealias Applier = (Match, inout Context, Options, Date) throws -> Bool
 
     public let left: Int
     public let right: Int
@@ -29,8 +29,8 @@ public struct Match {
 
     public var string: String { return text }
 
-    public func apply(context: inout Context, options: Options, date: inout Date) throws -> Bool {
-        return try applier(self, &context, options, &date)
+    public func apply(context: inout Context, options: Options, date: Date) throws -> Bool {
+        return try applier(self, &context, options, date)
     }
 
     public func updatingOrder(to order: Int?) -> Match {
