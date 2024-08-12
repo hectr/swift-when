@@ -15,7 +15,6 @@
  */
 
 import Foundation
-import Idioms
 
 extension RuleFactory {
     public static func buildTaggerRule(taggedWords: [String: [DateTimeTag]], regex customRegex: NSRegularExpression? = nil, strategy: Strategy = .override) -> Rule {

@@ -15,7 +15,6 @@
  */
 
 import Foundation
-import Idioms
 
 extension RuleFactory {
     public static var calendar: Calendar {

@@ -9,13 +9,11 @@ let package = Package(
             name: "when",
             targets: ["when"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/hectr/swift-idioms.git", from: "1.0.0"),
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "when",
-            dependencies: ["Idioms"]),
+            dependencies: []),
         .testTarget(
             name: "whenTests",
             dependencies: ["when"]),
