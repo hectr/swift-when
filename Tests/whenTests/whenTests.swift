@@ -28,10 +28,4 @@ final class whenTests: XCTestCase {
         XCTAssertEqual(result?.text, "February 23, 2019")
         print(result!.date)
     }
-
-
-    static var allTests = [
-        ("testDefaultDistance", testDefaultDistance),
-        ("testCustomDistance", testCustomDistance),
-    ]
 }

@@ -40,10 +40,4 @@ class PrependingTests: XCTestCase {
         let hello = "hello"
         XCTAssertEqual(empty.prepending(hello), hello)
     }
-
-    static var allTests = [
-        ("testPrependingString", testPrependingString),
-        ("testPrependingEmptyString", testPrependingEmptyString),
-        ("testPrependingToEmptyString", testPrependingToEmptyString),
-    ]
 }

@@ -74,7 +74,7 @@ extension Common {
             return true
         }
 
-        var components = calendar.dateComponents([.year, .month, .day], from: reference)
+        let components = calendar.dateComponents([.year, .month, .day], from: reference)
 
         guard let dayComponent = components.day else { throw Error.missingComponent(.day, in: components) }
         guard let monthComponent = components.month else { throw Error.missingComponent(.month, in: components) }
